@@ -44,6 +44,7 @@ class Activity(models.Model):
     updated_at = models.DateTimeField(auto_now_add=True, blank=True)
     activity_type = models.ForeignKey(ActivityType, on_delete=models.PROTECT)
     establishment = models.ForeignKey(Establishment, on_delete=models.PROTECT)
+    activity_hash = models.CharField(max_length=100)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
