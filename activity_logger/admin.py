@@ -5,4 +5,4 @@ from .models import Establishment
 
 @admin.register(Establishment)
 class EstablishmentAdmin(OSMGeoAdmin):
-    list_display = ('name', 'location')
+    list_display = ('name', 'location', 'updated_at')
