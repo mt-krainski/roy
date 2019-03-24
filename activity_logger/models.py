@@ -1,3 +1,5 @@
+import uuid
+from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.utils.text import slugify
 from django.utils.timezone import now
@@ -44,7 +46,14 @@ class Activity(models.Model):
     updated_at = models.DateTimeField(auto_now_add=True, blank=True)
     activity_type = models.ForeignKey(ActivityType, on_delete=models.PROTECT)
     establishment = models.ForeignKey(Establishment, on_delete=models.PROTECT)
-    activity_hash = models.CharField(max_length=100)
+    uuid = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        unique=True)
+    related_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    start_time = models.DateTimeField(null=True, blank=True)
+    end_time = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -56,3 +65,7 @@ class Activity(models.Model):
 
     def __repr__(self):
         return self.slug
+
+    class Meta:
+        verbose_name = 'Activity'
+        verbose_name_plural = 'Activities'
