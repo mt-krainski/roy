@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'rest_framework',
     'rest_framework.authtoken',
+    'utils',
     'activity_logger',
 ]
 
