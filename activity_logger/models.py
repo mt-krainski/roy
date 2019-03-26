@@ -69,3 +69,7 @@ class Activity(models.Model):
     class Meta:
         verbose_name = 'Activity'
         verbose_name_plural = 'Activities'
+        permissions = (
+            ('add', 'Add activities via API'),
+            ('remove', 'Remove activities via API'),
+        )
