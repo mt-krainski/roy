@@ -29,3 +29,4 @@ class ActivityAdmin(ModelAdmin):
 
     def _establishment(self, obj):
         return obj.establishment.name
+
