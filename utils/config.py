@@ -20,4 +20,5 @@ class RoyConfig(AppConfig):
 
     def ready(self):
         """Connect the post-save action to the user model."""
-        post_save.connect(self.create_auth_token, sender=settings.AUTH_USER_MODEL)
+        post_save.connect(
+            self.create_auth_token, sender=settings.AUTH_USER_MODEL)
