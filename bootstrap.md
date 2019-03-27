@@ -42,3 +42,12 @@ psql roy_db myuser
 CREATE EXTENSION postgis;
 ```
 You can use a file named `local_settings.py`, placed in the `roy` directory (the one containing the `settings.py` file) to insert your private database credentials. Git is set up to ignore that file.
+
+## Heroku setup
+
+To run on Heroku, remember to set up the environment variable: `BUILD_WITH_GEO_LIBRARIES` to `1`.
+
+```
+heroku login
+heroku config:set BUILD_WITH_GEO_LIBRARIES=1
+```

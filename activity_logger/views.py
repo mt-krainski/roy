@@ -65,7 +65,7 @@ def activity_manager_view(request):
             name='From API',
             activity_type=activity_type,
             establishment=establishment,
-            related_user=request.user,
+            user=request.user,
             start_time=timezone.now()
         )
         return Response({'activity_uuid': new_item.uuid})
@@ -77,7 +77,7 @@ def activity_manager_view(request):
         try:
             item = Activity.objects.get(
                 uuid=activity_uuid,
-                related_user=request.user,
+                user=request.user,
                 end_time__isnull=False,
             )
         except Activity.DoesNotExist:

@@ -10,6 +10,7 @@ class Establishment(models.Model):
     location = models.PointField()
     slug = models.CharField(max_length=100, blank=True)
     updated_at = models.DateTimeField(auto_now_add=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     def save(self, *args, **kwargs):
         self.slug= slugify(self.name)
@@ -22,11 +23,15 @@ class Establishment(models.Model):
     def __repr__(self):
         return self.slug
 
+    class Meta:
+        unique_together = ('slug', 'user')
+
 
 class ActivityType(models.Model):
     name = models.CharField(max_length=100)
     slug = models.CharField(max_length=100, blank=True)
     updated_at = models.DateTimeField(auto_now_add=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -38,6 +43,9 @@ class ActivityType(models.Model):
 
     def __repr__(self):
         return self.slug
+
+    class Meta:
+        unique_together = ('slug', 'user')
 
 
 class Activity(models.Model):
@@ -51,7 +59,7 @@ class Activity(models.Model):
         default=uuid.uuid4,
         editable=False,
         unique=True)
-    related_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     start_time = models.DateTimeField(null=True, blank=True)
     end_time = models.DateTimeField(null=True, blank=True)
 
