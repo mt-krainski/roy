@@ -1,0 +1,21 @@
+
+language: python
+
+python:
+  - "3.6"
+
+install:
+  - sudo apt update
+  - sudo apt install -y gdal-bin libgdal-dev python3-gdal binutils libproj-dev gunicorn
+  - sudo add-apt-repository ppa:ubuntugis/ppa
+    sudo apt install postgis
+  - pip install -r requirements.txt
+
+services: postgresql
+
+before_script:
+  - psql -c "CREATE DATABASE travis;" -U postgres
+  - psql -c "CREATE EXTENSION postgis;" -U postgres
+
+script:
+  - python manage.py migrate
