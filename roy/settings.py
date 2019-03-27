@@ -86,7 +86,7 @@ if 'TRAVIS' in os.environ:
     DATABASES = {
         'default': {
             'ENGINE': 'django.contrib.gis.db.backends.postgis',
-            'NAME': 'travis',
+            'NAME': 'django_travis_test',
             'USER': 'postgres',
             'PASSWORD': '',
             'HOST': 'localhost',
