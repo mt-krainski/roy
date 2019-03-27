@@ -1,3 +1,4 @@
 .idea/**
 **/__pycache__/**
 roy/local_settings.py
+staticfiles/**

@@ -6,3 +6,5 @@ libproj-dev
 gunicorn
 python-setuptools
 libatlas-base-dev
+libblas-dev
+libblas3
