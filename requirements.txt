@@ -6,3 +6,4 @@ psycopg2-binary
 uuid
 django-heroku
 gunicorn
+setuptools
