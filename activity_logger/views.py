@@ -85,7 +85,7 @@ def activity_manager_view(request):
                 'Invalid UUID',
                 422
             )
-        item.end_time=timezone.now()
+        item.end_time = timezone.now()
         item.save()
 
         return Response("Success")
