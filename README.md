@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mt-krainski/roy.svg?branch=master)](https://travis-ci.org/mt-krainski/roy)
+
 ## Roy
 
 This is a personal information and data management system with elements of automation. Hopefully, eventually, most of it will be automated. 
