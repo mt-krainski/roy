@@ -11,6 +11,7 @@ install:
   - sudo apt install -y gdal-bin libgdal-dev python3-gdal binutils libproj-dev gunicorn
   - sudo apt install -y postgis
   - pip install -r requirements.txt
+  - pip install codecov
 
 services: postgresql
 
@@ -20,3 +21,6 @@ before_script:
 
 script:
   - python manage.py migrate
+
+after_success:
+  - codecov
