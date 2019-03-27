@@ -8,3 +8,8 @@ python-setuptools
 libatlas-base-dev
 libblas-dev
 libblas3
+build-essential
+gfortran
+libgfortran3
+python-dev
+cython
