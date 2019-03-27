@@ -5,3 +5,4 @@ djangorestframework-stubs
 psycopg2-binary
 uuid
 django-heroku
+gunicorn

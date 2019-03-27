@@ -3,4 +3,3 @@ libgdal-dev
 python3-gdal
 binutils
 libproj-dev
-gunicorn
