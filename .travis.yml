@@ -8,7 +8,9 @@ python:
 
 install:
   - sudo apt update
+  - sudo add-apt-repository ppa:ubuntugis/ppa -y
   - sudo apt install -y gdal-bin libgdal-dev python3-gdal binutils libproj-dev gunicorn
+  - sudo apt install -y postgresql-9.6-postgis-2.4
   - pip install -r requirements.txt
   - pip install codecov
 
