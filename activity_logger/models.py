@@ -13,7 +13,7 @@ class Establishment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     def save(self, *args, **kwargs):
-        self.slug= slugify(self.name)
+        self.slug = slugify(self.name)
         self.updated_at = now()
         return super().save(*args, **kwargs)
 
