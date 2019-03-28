@@ -175,5 +175,3 @@ class ActivityTestCase(TestCase):
         self.assertTrue(
             Activity.objects.filter(name='From API').exists()
         )
-
-        print(response)
