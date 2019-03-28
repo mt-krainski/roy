@@ -17,7 +17,7 @@ VALID_REQUEST_TYPES = (
 )
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 @authentication_classes((TokenAuthentication,))
 @permission_required('activity_logger.add')
 @login_required
