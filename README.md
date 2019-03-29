@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/mt-krainski/roy.svg?branch=master)](https://travis-ci.org/mt-krainski/roy)
+[![Code Coverage](https://codecov.io/gh/mt-krainski/roy/branch/master/graph/badge.svg)](https://codecov.io/gh/mt-krainski/roy)
+
 
 ## Roy
 
