@@ -68,7 +68,7 @@ def activity_manager_view(request):
             user=request.user,
             start_time=timezone.now()
         )
-        return Response({'activity_uuid': new_item.uuid})
+        return Response(new_item.uuid)
 
     elif request_type == ACTIVITY_FINISH:
 
