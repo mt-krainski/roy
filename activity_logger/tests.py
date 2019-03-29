@@ -138,7 +138,7 @@ class ActivityTestCase(TestCase):
             token=self.user_token
         )
         response = activity_manager_view(request)
-        self.assertEqual(response.status_code, 302, msg=response.content)
+        self.assertEqual(response.status_code, 302)
 
         request = factory.get(
             'activity_logger/activity_manager',
@@ -151,7 +151,7 @@ class ActivityTestCase(TestCase):
             token=self.permitted_test_user
         )
         response = activity_manager_view(request)
-        self.assertEqual(response.status_code, 422, msg=response.content)
+        self.assertEqual(response.status_code, 422)
 
         request = factory.get(
             'activity_logger/activity_manager',
@@ -170,8 +170,40 @@ class ActivityTestCase(TestCase):
         )
         response = activity_manager_view(request)
 
+        created_uuid = str(response.data)
+
         self.assertEqual(
-            response.status_code, 200, msg=response.rendered_content)
+            response.status_code, 200)
         self.assertTrue(
-            Activity.objects.filter(name='From API').exists()
+            Activity.objects.filter(
+                name='From API',
+                uuid=created_uuid,
+                end_time__isnull=True
+            ).exists()
+        )
+
+        request = factory.get(
+            'activity_logger/activity_manager',
+            json.dumps({
+                'type': 'finish',
+                'activity_uuid': created_uuid,
+            }),
+            format='json',
+            content_type='application/json'
+        )
+        force_authenticate(
+            request,
+            user=self.permitted_test_user,
+            token=self.permitted_test_user
+        )
+        response = activity_manager_view(request)
+
+        self.assertEqual(
+            response.status_code, 200)
+        self.assertFalse(
+            Activity.objects.filter(
+                name='From API',
+                uuid=created_uuid,
+                end_time__isnull=True,
+            ).exists()
         )

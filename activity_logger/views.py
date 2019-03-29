@@ -78,7 +78,7 @@ def activity_manager_view(request):
             item = Activity.objects.get(
                 uuid=activity_uuid,
                 user=request.user,
-                end_time__isnull=False,
+                end_time__isnull=True,
             )
         except Activity.DoesNotExist:
             return HttpResponse(
