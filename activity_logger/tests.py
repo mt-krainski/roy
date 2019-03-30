@@ -186,7 +186,7 @@ class ActivityTestCase(TestCase):
             'activity_logger/activity_manager',
             json.dumps({
                 'type': 'finish',
-                'activity_uuid': created_uuid,
+                'activity_uuid': f'"{created_uuid}"',
             }),
             format='json',
             content_type='application/json'
