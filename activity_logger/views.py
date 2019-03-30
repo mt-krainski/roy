@@ -72,7 +72,7 @@ def activity_manager_view(request):
 
     elif request_type == ACTIVITY_FINISH:
 
-        activity_uuid = request.data.get('activity_uuid')
+        activity_uuid = request.data.get('activity_uuid')[1:-1]
 
         try:
             item = Activity.objects.get(
