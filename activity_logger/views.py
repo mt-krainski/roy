@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import permission_required, login_required
-from django.core.exceptions import SuspiciousOperation
+from django.core.exceptions import ValidationError
 from django.http import HttpResponse
 from django.utils import timezone
 from rest_framework.authentication import TokenAuthentication
@@ -17,7 +17,7 @@ VALID_REQUEST_TYPES = (
 )
 
 
-@api_view(['POST', 'GET'])
+@api_view(['POST'])
 @authentication_classes((TokenAuthentication,))
 @permission_required('activity_logger.add')
 @login_required
@@ -27,12 +27,13 @@ def activity_manager_view(request):
     Request structure:
     {
         'type': ('start', 'finish'),
-        'establishment': 'establishment-slug',
-        'activity_type': 'activity-type-slug',
+        'establishment': 'establishment-slug', (only for type=='start')
+        'activity_type': 'activity-type-slug', (only for type=='start')
         'activity_uuid': 'activity-uuid' (only for type=='finish')
 
     }
     """
+
     request_type = request.data.get('type')
     if request_type not in VALID_REQUEST_TYPES:
         return HttpResponse(
@@ -42,50 +43,74 @@ def activity_manager_view(request):
         )
 
     if request_type == ACTIVITY_START:
-
-        try:
-            establishment = Establishment.objects.get(
-                slug=request.data.get('establishment'))
-        except Establishment.DoesNotExist:
-            return HttpResponse(
-                'Establishment not recognized.',
-                status=422,
-            )
-
-        try:
-            activity_type = ActivityType.objects.get(
-                slug=request.data.get('activity_type'))
-        except ActivityType.DoesNotExist:
-            return HttpResponse(
-                'Activity Type not recognized.',
-                status=422,
-            )
-
-        new_item = Activity.objects.create(
-            name='From API',
-            activity_type=activity_type,
-            establishment=establishment,
-            user=request.user,
-            start_time=timezone.now()
+        return start_activity(
+            request.data.get('establishment'),
+            request.data.get('activity_type'),
+            request.user
         )
-        return Response(new_item.uuid)
 
     elif request_type == ACTIVITY_FINISH:
+        return finish_activity(
+            request.data.get('activity_uuid').replace('"', ''), request.user)
 
-        activity_uuid = request.data.get('activity_uuid')[1:-1]
 
-        try:
-            item = Activity.objects.get(
-                uuid=activity_uuid,
-                user=request.user,
-                end_time__isnull=True,
-            )
-        except Activity.DoesNotExist:
-            return HttpResponse(
-                'Invalid UUID',
-                422
-            )
+def start_activity(
+    establishment, activity_type, user,
+        activity_name='From API'
+):
+    """Start a new activity based on passed parameters.
+
+    Passed parameters are slugs.
+
+    Return uuid of a newly started activity.
+    Raises Establishment.DoesNotExist or ActivityType.DoesNotExist
+        if selected establishment or activity_type do not exist
+    """
+
+    try:
+        establishment = Establishment.objects.get(slug=establishment)
+        activity_type = ActivityType.objects.get(slug=activity_type)
+        new_item = Activity.objects.create(
+            name=activity_name,
+            activity_type=activity_type,
+            establishment=establishment,
+            user=user,
+            start_time=timezone.now()
+        )
+    except Establishment.DoesNotExist:
+        return HttpResponse(
+            'Establishment not recognized.',
+            status=422,
+        )
+    except ActivityType.DoesNotExist:
+        return HttpResponse(
+            'Activity type not recognized.',
+            status=422,
+        )
+
+    return Response(new_item.uuid)
+
+
+def finish_activity(
+    activity_uuid, user
+):
+    """Finish activity given by uuid.
+
+    Works only if user matches the activity uuid and the activity is not yet
+    finished.
+    """
+    try:
+        item = Activity.objects.get(
+            uuid=activity_uuid,
+            user=user,
+            end_time__isnull=True,
+        )
         item.end_time = timezone.now()
         item.save()
+    except Activity.DoesNotExist or ValidationError:
+        return HttpResponse(
+            'Invalid UUID',
+            status=422
+        )
 
-        return Response("Success")
+    return Response("Success")

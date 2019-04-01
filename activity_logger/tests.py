@@ -5,32 +5,12 @@ from django.contrib.auth.models import User, Permission
 from django.db.utils import IntegrityError
 from django.test import TestCase
 from django.contrib.gis.geos import Point
-from django.utils import six
-from django.utils.encoding import force_bytes
-
 from django.utils import timezone
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIRequestFactory, force_authenticate
 
 from activity_logger.models import Establishment, ActivityType, Activity
 from activity_logger.views import activity_manager_view
-
-
-# todo: this is a mess, try to use APIClient?
-class NewAPIRequestFactory(APIRequestFactory):
-    def get(self, path, data=None, **extra):
-        r = {
-            # 'QUERY_STRING': urlencode(data or {}, doseq=True),
-        }
-        if not data and '?' in path:
-            # Fix to support old behavior where you have the arguments in the
-            # url. See #1461.
-            query_string = force_bytes(path.split('?')[1])
-            if six.PY3:
-                query_string = query_string.decode('iso-8859-1')
-            r['QUERY_STRING'] = query_string
-        r.update(extra)
-        return self.generic('GET', path, data, **r)
 
 
 class ActivityTestCase(TestCase):
@@ -49,6 +29,7 @@ class ActivityTestCase(TestCase):
             Permission.objects.get(name='Add activities via API')
         )
         self.user_token = Token.objects.get(user=self.test_user)
+        self.factory = APIRequestFactory()
         Establishment.objects.create(
             name='Test',
             location=Point(0, 0),
@@ -124,51 +105,65 @@ class ActivityTestCase(TestCase):
         self.assertEqual(
             test_item.slug, 'test-activity')
 
-    def test_create_activity_by_request(self):
-        factory = NewAPIRequestFactory()
+    def make_activity_manager_request(self, data, user=None):
 
-        request = factory.get(
+        if user is None:
+            user = self.permitted_test_user
+
+        request = self.factory.post(
             'activity_logger/activity_manager',
-            data={},
+            data,
             format='json',
         )
         force_authenticate(
             request,
-            user=self.test_user,
-            token=self.user_token
+            user=user,
+            token=user
         )
         response = activity_manager_view(request)
+        return response
+
+    def test_invalid_user(self):
+
+        response = self.make_activity_manager_request({}, self.test_user)
         self.assertEqual(response.status_code, 302)
 
-        request = factory.get(
-            'activity_logger/activity_manager',
-            data='',
-            format='json',
-        )
-        force_authenticate(
-            request,
-            user=self.permitted_test_user,
-            token=self.permitted_test_user
-        )
-        response = activity_manager_view(request)
+    def test_invalid_content(self):
+
+        response = self.make_activity_manager_request(
+            {'test': ''})
         self.assertEqual(response.status_code, 422)
 
-        request = factory.get(
-            'activity_logger/activity_manager',
-            json.dumps({
+    def test_incorrect_establishment(self):
+        response = self.make_activity_manager_request(
+            {
+                'type': 'start',
+                'establishment': 'incorrect',
+                'activity_type': 'test-activity',
+            }
+        )
+        self.assertEqual(response.status_code, 422)
+        self.assertIn(b'Establishment', response.content)
+
+    def test_incorrect_activity_type(self):
+        response = self.make_activity_manager_request(
+            {
+                'type': 'start',
+                'establishment': 'test',
+                'activity_type': 'incorrect',
+            }
+        )
+        self.assertEqual(response.status_code, 422)
+        self.assertIn(b'Activity type', response.content)
+
+    def test_activity_life_cycle(self):
+        response = self.make_activity_manager_request(
+            {
                 'type': 'start',
                 'establishment': 'test',
                 'activity_type': 'test-activity',
-            }),
-            format='json',
-            content_type='application/json'
+            }
         )
-        force_authenticate(
-            request,
-            user=self.permitted_test_user,
-            token=self.permitted_test_user
-        )
-        response = activity_manager_view(request)
 
         created_uuid = str(response.data)
 
@@ -182,24 +177,13 @@ class ActivityTestCase(TestCase):
             ).exists()
         )
 
-        request = factory.get(
-            'activity_logger/activity_manager',
-            json.dumps({
+        response = self.make_activity_manager_request(
+            {
                 'type': 'finish',
                 'activity_uuid': f'"{created_uuid}"',
-            }),
-            format='json',
-            content_type='application/json'
+            }
         )
-        force_authenticate(
-            request,
-            user=self.permitted_test_user,
-            token=self.permitted_test_user
-        )
-        response = activity_manager_view(request)
-
-        self.assertEqual(
-            response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertFalse(
             Activity.objects.filter(
                 name='From API',
@@ -207,3 +191,12 @@ class ActivityTestCase(TestCase):
                 end_time__isnull=True,
             ).exists()
         )
+
+        response = self.make_activity_manager_request(
+            {
+                'type': 'finish',
+                'activity_uuid': f'"{created_uuid}"',
+            }
+        )
+        self.assertEqual(response.status_code, 422)
+        self.assertIn(b'Invalid UUID', response.content)
