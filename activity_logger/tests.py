@@ -2,10 +2,10 @@
 from time import sleep
 
 from django.contrib.auth.models import User, Permission
-from django.db.utils import IntegrityError
-from django.test import TestCase
 from django.contrib.gis.geos import Point
+from django.db.utils import IntegrityError
 from django.utils import timezone
+from django.test import TestCase
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIRequestFactory, force_authenticate
 
