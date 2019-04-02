@@ -51,7 +51,10 @@ def activity_manager_view(request):
 
     elif request_type == ACTIVITY_FINISH:
         return finish_activity(
-            request.data.get('activity_uuid').replace('"', ''), request.user)
+            request.data.get(
+                'activity_uuid'
+            ).replace('"', '').replace('\'', ''),
+            request.user)
 
 
 def start_activity(
