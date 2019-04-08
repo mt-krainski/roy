@@ -39,6 +39,10 @@ class ActivityAdmin(ModelAdmin):
         'user'
     )
 
+    ordering = (
+        '-start_time',
+    )
+
     def _uuid_short(self, obj):
         return str(obj.uuid).split('-')[0]
     _uuid_short.short_description = 'UUID'
