@@ -7,3 +7,4 @@ uuid
 django-heroku
 gunicorn
 setuptools
+django-extensions
