@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'crispy_forms',
     'utils.apps.UtilsConfig',
+    'utils.config.RoyConfig',
     'activity_logger.apps.ActivityLoggerConfig',
 ]
 
