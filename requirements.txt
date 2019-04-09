@@ -8,3 +8,4 @@ django-heroku
 gunicorn
 setuptools
 django-extensions
+django-crispy-forms

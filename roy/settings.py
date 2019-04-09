@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'rest_framework.authtoken',
+    'crispy_forms',
     'utils.apps.UtilsConfig',
     'activity_logger.apps.ActivityLoggerConfig',
 ]
@@ -78,6 +79,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'roy.wsgi.application'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
 # Database

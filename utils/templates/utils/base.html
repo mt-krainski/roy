@@ -6,16 +6,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-  <title>{% block title %}Django Auth Tutorial{% endblock %}</title>
+  <title>{% block title %} Roy {% endblock %}</title>
 </head>
 <body>
   <main>
     <div class="container">
-      {% block content %}
-      {% endblock %}
+      <div class="row justify-content-center">
+        <div class="col-8">
+          <h1 class="mt-2">Roy</h1>
+          <hr class="mt-0 mb-4">
+            {% block content %}
+            {% endblock %}
+        </div>
+      </div>
     </div>
   </main>
 </body>
