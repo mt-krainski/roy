@@ -5,10 +5,19 @@
 
 {% block title %} Login {% endblock %}
 
+{% block pagehead %}
+<div class="col-sm-8">
+  <h2 class="mt-4">Roy</h2>
+</div>
+{% endblock %}
+
 {% block content %}
 <form method="post">
   {% csrf_token %}
   {{ form|crispy }}
-  <button type="submit" class="btn btn-success">Login</button>
+  <button type="submit" class="btn btn-light">
+    <span class="spinner-grow spinner-grow-sm"></span>
+    Log in
+  </button>
 </form>
 {% endblock %}

@@ -5,10 +5,22 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <p><a href="{% url 'logout' %}">logout</a></p>
+  <div class="row">
+    <div class="col-sm-6">
+      {% if user.profile %}
+        Welcome {{ user.profile.first_name }}
+      {% else %}
+        Welcome {{ user.username }}
+      {% endif %}
+    </div>
+  </div>
 {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
+  <div class="row">
+    <div class="col-sm-8 my-auto">
+      You are not logged in
+    </div>
+      <div class="col-sm-4 text-right">
+    </div>
+  </div>
 {% endif %}
 {% endblock %}

@@ -1,4 +1,6 @@
 import uuid
+
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.utils.text import slugify
@@ -10,7 +12,7 @@ class Establishment(models.Model):
     location = models.PointField()
     slug = models.CharField(max_length=100, blank=True)
     updated_at = models.DateTimeField(auto_now_add=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -31,7 +33,7 @@ class ActivityType(models.Model):
     name = models.CharField(max_length=100)
     slug = models.CharField(max_length=100, blank=True)
     updated_at = models.DateTimeField(auto_now_add=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -59,7 +61,7 @@ class Activity(models.Model):
         default=uuid.uuid4,
         editable=False,
         unique=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     start_time = models.DateTimeField(null=True, blank=True)
     end_time = models.DateTimeField(null=True, blank=True)
 

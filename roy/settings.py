@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'django_extensions',
+    'accounts.apps.AccountsConfig',
     'rest_framework',
     'rest_framework.authtoken',
     'crispy_forms',
@@ -82,7 +83,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'roy.wsgi.application'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
