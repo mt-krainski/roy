@@ -29,7 +29,7 @@ if 'DYNO' in os.environ:
 else:
     DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['roy.localhost']
 
 
 # Application definition
