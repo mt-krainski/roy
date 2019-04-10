@@ -1,0 +1,59 @@
+{% load i18n l10n %}
+<style type="text/css">{% block map_css %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+    #{{ id }}_map { width: 100%; height: {{ map_height }}px; }
+    #{{ id }}_map .aligned label { float: inherit; }
+    #{{ id }}_div_map { position: relative; vertical-align: top; float: {{ LANGUAGE_BIDI|yesno:"right,left" }}; }
+    {% if not display_raw %}#{{ id }} { display: none; }{% endif %}
+    {% endblock %}
+</style>
+
+<div class="row">
+    <div id="{{ id }}_div_map" class="col-sm-12">
+        <div id="{{ id }}_map"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12 mt-2 text-right">
+        {% if not disabled %}
+            <span class="clear_features">
+                <a class="btn btn-sm btn-warning" href="javascript:{{ module }}.clearFeatures()">
+                    Clear map
+                </a>
+            </span>
+        {% endif %}
+    </div>
+    <div class="row">
+        {% if display_raw %}
+            <p>
+                {% trans "Debugging window (serialized value)" %}
+            </p>
+        {% endif %}
+    </div>
+    <div class="row">
+        <textarea id="{{ id }}" class="vSerializedField required" cols="150" rows="10" name="{{ name }}">{{ serialized }}</textarea>
+    </div>
+</div>
+
+<script type="text/javascript">
+        {% block map_options %}
+            var map_options = {};
+        {% endblock %}
+        {% block base_layer %}
+            var base_layer = new ol.layer.Tile({source: new ol.source.OSM()});
+        {% endblock %}
+        {% block options %}
+            var options = {
+                base_layer: base_layer,
+                geom_name: '{{ geom_type }}',
+                id: '{{ id }}',
+                map_id: '{{ id }}_map',
+                map_options: map_options,
+                map_srid: {{ map_srid|unlocalize }},
+                name: '{{ name }}'
+            };
+            options['default_lon'] = {{ default_lon|unlocalize }};
+            options['default_lat'] = {{ default_lat|unlocalize }};
+            options['default_zoom'] = {{ default_zoom|unlocalize }};
+        {% endblock %}
+        var {{ module }} = new MapWidget(options);
+    </script>

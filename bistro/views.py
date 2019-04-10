@@ -35,6 +35,7 @@ def add_place(request):
             new_place = BistroPlace(
                 name=form.cleaned_data['place_name'],
                 slug=slugify(form.cleaned_data['place_name']),
+                location=form.cleaned_data['location'],
                 user=request.user,
                 type=form.cleaned_data['type'],
             )

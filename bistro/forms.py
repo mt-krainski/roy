@@ -1,6 +1,7 @@
 from django.contrib.gis import forms
 
-from bistro.models import BistroType
+from .models import BistroType
+from .widgets import BootstrapMapWidget
 
 
 class PlaceForm(forms.Form):
@@ -11,4 +12,8 @@ class PlaceForm(forms.Form):
     type = forms.ModelChoiceField(
         label='Place Type',
         queryset=BistroType.objects.all()
+    )
+    location = forms.PointField(
+        widget=BootstrapMapWidget(),
+        required=False
     )
