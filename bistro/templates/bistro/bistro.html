@@ -1,0 +1,13 @@
+<!-- templates/bistro/bistro.html -->
+
+{% extends 'utils/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %} Bistro {% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-8">Your bistro for today:</div>
+    <div class="col-sm-4">{{ bistro }}</div>
+</div>
+{% endblock %}
