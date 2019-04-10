@@ -1,13 +1,29 @@
 <!-- templates/bistro/bistro.html -->
 
 {% extends 'utils/base.html' %}
-{% load crispy_forms_tags %}
 
 {% block title %} Bistro {% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="col-sm-8">Your bistro for today:</div>
-    <div class="col-sm-4">{{ bistro }}</div>
+    {% if bistro %}
+        <div class="col-sm-8">Your bistro for today:</div>
+        <div class="col-sm-4">{{ bistro }}</div>
+    {% else %}
+        <div clss="col-sm-12">You haven't added any bistros yet!</div>
+    {% endif %}
+</div>
+<br><br>
+<div class="row">
+    <div class="col-6">
+        <a class="btn btn-light" href="{% url 'bistro:random_bistro'%}">
+            Get bistro!
+        </a>
+    </div>
+    <div class="col-6 text-right">
+        <a class="btn btn-secondary" href="{% url 'bistro:add_place'%}">
+            Add bistro
+        </a>
+    </div>
 </div>
 {% endblock %}

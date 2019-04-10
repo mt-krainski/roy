@@ -1,0 +1,23 @@
+<!-- templates/bistro/added.html -->
+
+{% extends 'utils/base.html' %}
+
+{% block title %} Bistro {% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-8">
+        {{ bistro_name }} has been added!
+    </div>
+    <div class="col-sm-2 mt-2">
+        <a class="btn btn-secondary" href="{% url 'bistro:add_place'%}">
+            Add another
+        </a>
+    </div>
+    <div class="col-sm-2 mt-2">
+        <a class="btn btn-secondary" href="{% url 'bistro:random_bistro'%}">
+            Get bistro!
+        </a>
+    </div>
+</div>
+{% endblock %}

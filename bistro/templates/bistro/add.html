@@ -1,0 +1,23 @@
+<!-- templates/bistro/add.html -->
+
+{% extends 'utils/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %} Bistro {% endblock %}
+
+{% block content %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form | crispy }}
+    <div class="row mt-2">
+        <div class="col-6">
+            <input class="btn btn-secondary" type="submit" value="Submit">
+        </div>
+        <div class="col-6 text-right">
+            <a class="btn btn-light" href="{% url 'bistro:random_bistro'%}">
+                Get bistro!
+            </a>
+        </div>
+    </div>
+</form>
+{% endblock %}
