@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'utils.apps.UtilsConfig',
     'utils.config.RoyConfig',
     'activity_logger.apps.ActivityLoggerConfig',
+    'bistro.apps.BistroConfig',
 ]
 
 MIDDLEWARE = [
