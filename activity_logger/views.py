@@ -140,19 +140,27 @@ def summary_view(request):
     results = []
     for day in [(now()-timedelta(days=n)).date() for n in range(0, 30)]:
         day_data = data.filter(
-            Q(start_time__date=day) |
+            Q(start_time__date=day, end_time__date=day) |
+            Q(start_time__date=day, end_time__date=day+timedelta(days=1)) |
             Q(start_time__date=day-timedelta(days=1), end_time__date=day)
         )
-        # if day_data.exists():
+        
         activities = {}
         for activity in day_data:
             if activity.end_time.date() == activity.start_time.date():
                 delta = activity.end_time - activity.start_time
-            else:
+            elif activity.start_time.date() < day:
                 delta = (
                     activity.end_time -
                     activity.end_time.replace(hour=0, minute=0, second=0)
                 )
+            elif activity.end_time.date() > day:
+                delta = (
+                    activity.start_time.date() + timedelta(days=1) -
+                    activity.start_time
+                )
+            else:
+                raise ValueError('There\'s something wrong with time ranges.')
             delta = delta - timedelta(microseconds=delta.microseconds)
             current_delta = activities.get(
                 activity.activity_type.slug, timedelta())
