@@ -144,7 +144,7 @@ def summary_view(request):
             Q(start_time__date=day, end_time__date=day+timedelta(days=1)) |
             Q(start_time__date=day-timedelta(days=1), end_time__date=day)
         )
-        
+
         activities = {}
         for activity in day_data:
             if activity.end_time.date() == activity.start_time.date():
