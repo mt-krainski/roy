@@ -3,6 +3,7 @@ import uuid
 from django.conf import settings
 from django.db import models
 from django.contrib.gis.db import models as gis_models
+from django.utils.text import slugify
 
 
 class BistroType(models.Model):
@@ -12,6 +13,13 @@ class BistroType(models.Model):
     def __str__(self):
         return self.name
 
+    def __repr__(self):
+        return self.slug
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
+
 
 class ConsumableType(models.Model):
     name = models.CharField(max_length=100)
@@ -19,6 +27,13 @@ class ConsumableType(models.Model):
 
     def __str__(self):
         return self.name
+
+    def __repr__(self):
+        return self.slug
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
 
 
 class BistroPlace(gis_models.Model):
@@ -38,6 +53,13 @@ class BistroPlace(gis_models.Model):
 
     def __str__(self):
         return self.name
+
+    def __repr__(self):
+        return self.slug
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
 
 
 class Visit(models.Model):
