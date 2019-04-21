@@ -1,7 +1,13 @@
+from datetime import timedelta
 from django.contrib.auth.decorators import permission_required, login_required
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.utils import timezone
+import plotly.offline as opy
+import plotly.graph_objs as go
+from django.utils.timezone import now
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
@@ -117,3 +123,112 @@ def finish_activity(
         )
 
     return Response("Success")
+
+
+@login_required
+def summary_view(request):
+
+    data = Activity.objects.filter(
+        user=request.user,
+        start_time__isnull=False,
+        end_time__isnull=False,
+        start_time__gt=now()-timedelta(days=30)
+    )
+
+    activity_types = ActivityType.objects.filter(user=request.user)
+
+    results = []
+    for day in [(now()-timedelta(days=n)).date() for n in range(0, 30)]:
+        day_data = data.filter(
+            Q(start_time__date=day) |
+            Q(start_time__date=day-timedelta(days=1), end_time__date=day)
+        )
+        # if day_data.exists():
+        activities = {}
+        for activity in day_data:
+            if activity.end_time.date() == activity.start_time.date():
+                delta = activity.end_time - activity.start_time
+            else:
+                delta = (
+                    activity.end_time -
+                    activity.end_time.replace(hour=0, minute=0, second=0)
+                )
+            delta = delta - timedelta(microseconds=delta.microseconds)
+            current_delta = activities.get(
+                activity.activity_type.slug, timedelta())
+
+            activities[activity.activity_type.slug] = current_delta + delta
+
+        total_recorded = sum(activities.values(), timedelta())
+        activities['other'] = timedelta(hours=24) - total_recorded
+
+        results.append(
+            (day, activities)
+        )
+
+    data_traces = [go.Bar(
+        x=[
+            day
+            for day, data
+            in results
+        ],
+        y=[
+            data[activity_type.slug].total_seconds()/3600
+            if activity_type.slug in data else 0
+            for day, data
+            in results
+        ],
+        text=[
+            f'{activity_type.name}: {str(data[activity_type.slug])}'
+            if activity_type.slug in data else ''
+            for day, data
+            in results
+        ],
+        name=activity_type.name,
+        hoverinfo='text',
+    ) for activity_type in activity_types] + [
+        go.Bar(
+            x=[
+                day
+                for day, data
+                in results
+                if 'other' in data
+            ],
+            y=[
+                data['other'].total_seconds()/3600
+                if 'other' in data else 0
+                for day, data
+                in results
+            ],
+            text=[
+                f'Other: {str(data["other"])}'
+                if 'other' in data else ''
+                for day, data
+                in results
+            ],
+            name='Other',
+            hoverinfo='text',
+            marker=dict(
+                color='#ECEFF1',
+            ),
+        )
+    ]
+
+    layout = go.Layout(
+        barmode='stack',
+        title='Activities report',
+        yaxis=dict(
+            title='Duration [h]',
+            range=[0, 24],
+            tickvals=list(range(0, 25, 2)),
+        ),
+    )
+
+    figure = go.Figure(data=data_traces, layout=layout)
+
+    div = opy.plot(figure, output_type='div')
+
+    return render(
+        request, 'activity_logger/summary.html',
+        {'graph': div}
+    )

@@ -1,0 +1,15 @@
+<!-- templates/activity_logger/summary.html -->
+
+{% extends 'utils/base.html' %}
+
+{% block title %} Activities {% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        {% if graph %}
+            {{ graph|safe }}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
