@@ -3,6 +3,7 @@ django-crispy-forms
 django-extensions
 django-heroku
 django-rest-framework
+django-simple-menu
 djangorestframework
 djangorestframework-stubs
 gunicorn

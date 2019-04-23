@@ -1,34 +1,43 @@
 <!-- templates/utils/base.html -->
 <!DOCTYPE html>
 {% load static %}
+{% load menu %}
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+<!--  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>-->
+<!--  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>-->
+<!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>-->
   <title>{% block title %} Roy {% endblock %}</title>
   {% block head %} {% endblock %}
 </head>
 <body>
   <main>
     <div class="container">
-      <div class="row justify-content-center align-items-center">
-        {% block pagehead %}
-          <div class="col-4">
-            <h2 class="mt-4">Roy</h2>
-          </div>
-          <div class="col-4 text-right mt-4">
-            {% if user.is_authenticated %}
-              <a class="btn btn-primary btn-sm" href="{% url 'logout' %}">Log out</a>
-            {% else %}
-              <a href="{% url 'login' %}" class="btn btn-primary btn-sm">Log in</a>
-            {% endif %}
-          </div>
-        {% endblock %}
+      <div class="row justify-content-center mt-4">
+        <div class="col-sm-12">
+          {% block menu %}
+            {% generate_menu %}
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary ">
+                <a class="navbar-brand" href="#">Roy</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                  {% with menu=menus.main %}
+                    {% include "utils/navbar.html" %}
+                  {% endwith %}
+                </ul>
+              </div>
+            </nav>
+          {% endblock %}
+        </div>
       </div>
       <div class="row justify-content-center">
-        <div class="col-8">
-          <hr class="mt-0 mb-4">
+        <div class="col-12">
             {% block messages %}
               {% for message in messages %}
                 <div class="alert {% if message.tags %} alert-{{ message.tags }} {% endif %}" >
@@ -36,11 +45,18 @@
                 </div>
               {% endfor %}
             {% endblock %}
+
             {% block content %}
+
             {% endblock %}
         </div>
       </div>
     </div>
   </main>
+
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 </body>
 </html>

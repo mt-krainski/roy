@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'django_extensions',
     'accounts.apps.AccountsConfig',
+    'menu',
     'rest_framework',
     'rest_framework.authtoken',
     'crispy_forms',
