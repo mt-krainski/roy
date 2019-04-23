@@ -4,15 +4,6 @@ from menu import Menu, MenuItem
 Menu.add_item(
     'main',
     MenuItem(
-        'Home',
-        reverse('home'),
-        weight=0,
-    )
-)
-
-Menu.add_item(
-    'main',
-    MenuItem(
         'Login',
         reverse('login'),
         weight=1000,
