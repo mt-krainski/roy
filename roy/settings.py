@@ -20,14 +20,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '_h+**nn!5g8@si-*-k82&etm^&(zua^w3*5ea28&n&v0js#59r'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 if 'DYNO' in os.environ:
     DEBUG = False
+    if 'ADMIN_NAME' in os.environ and 'ADMIN_EMAIL' in os.environ:
+        ADMINS = (
+            (os.environ['ADMIN_NAME'], os.environ['ADMIN_EMAIL'])
+        )
 else:
     DEBUG = True
+
+if 'SECRET_KEY' in os.environ:
+    SECRET_KEY = os.environ['SECRET_KEY']
 
 ALLOWED_HOSTS = []
 

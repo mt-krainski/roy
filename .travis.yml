@@ -21,6 +21,7 @@ before_script:
   - psql -c "CREATE EXTENSION postgis;" -U postgres
 
 script:
+  - export SECRET_KEY='_h+**nn!5g8@si-*-k82&etm^&(zua^w3*5ea28&n&v0js#59r'
   - python manage.py collectstatic
   - python manage.py migrate
   - coverage run --source '.' ./manage.py test
