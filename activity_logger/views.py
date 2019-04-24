@@ -151,13 +151,14 @@ def summary_view(request):
                 delta = activity.end_time - activity.start_time
             elif activity.start_time.date() < day:
                 delta = (
-                    activity.end_time -
-                    activity.end_time.replace(hour=0, minute=0, second=0)
+                    activity.end_time
+                    - activity.end_time.replace(hour=0, minute=0, second=0)
                 )
             elif activity.end_time.date() > day:
                 delta = (
-                    activity.start_time.date() + timedelta(days=1) -
-                    activity.start_time
+                    activity.start_time.replace(hour=0, minute=0, second=0)
+                    + timedelta(days=1)
+                    - activity.start_time
                 )
             else:
                 raise ValueError('There\'s something wrong with time ranges.')
