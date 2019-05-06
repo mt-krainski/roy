@@ -4,6 +4,7 @@ from time import sleep
 from django.contrib.auth.models import User, Permission
 from django.contrib.gis.geos import Point
 from django.db.utils import IntegrityError
+from django.urls import reverse
 from django.utils import timezone
 from django.test import TestCase
 from rest_framework.authtoken.models import Token
@@ -15,11 +16,11 @@ from activity_logger.views import activity_manager_view
 
 class ActivityTestCase(TestCase):
     def setUp(self):
-        User.objects.create(
+        User.objects.create_user(
             username='test',
             password='test',
         )
-        User.objects.create(
+        User.objects.create_user(
             username='permitted-test',
             password='test',
         )
@@ -200,3 +201,11 @@ class ActivityTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 422)
         self.assertIn(b'Invalid UUID', response.content)
+
+    def test_summary_view(self):
+        login = self.client.login(username='permitted-test', password='test')
+        response = self.client.get(reverse('activity_logger:summary-view'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['user'].username, 'permitted-test')
+        self.assertTemplateUsed(response, 'activity_logger/summary.html')
+
