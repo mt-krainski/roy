@@ -1,0 +1,31 @@
+<!-- templates/notes/note_view.html -->
+
+{% extends 'utils/base.html' %}
+{% load static %}
+
+{% block title %} Notes {% endblock %}
+
+{% block head %}
+<link href='http://fonts.googleapis.com/css?family=Great+Vibes' rel='stylesheet' type='text/css'>
+{% endblock %}
+
+{% block content %}
+
+<form method="POST" action="">{% csrf_token %}
+    <div class="row mb-3">
+        <div class="col-2"></div>
+        <div class="col-8 text-center" style="font-family: 'Great Vibes'">
+            <h2>--- Create something wonderful! ---</h2>
+        </div>
+        <div class="col-2 text-right">
+            <button type="submit" class="btn btn-primary">
+                Save
+            </button>
+        </div>
+    </div>
+    {{ form }}
+</form>
+
+{{ form.media }}
+
+{% endblock %}

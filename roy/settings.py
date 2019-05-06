@@ -56,6 +56,9 @@ INSTALLED_APPS = [
     'utils.config.RoyConfig',
     'activity_logger.apps.ActivityLoggerConfig',
     'bistro.apps.BistroConfig',
+    'django.forms',
+    'markdownx',
+    'notes.apps.NotesConfig',
 ]
 
 MIDDLEWARE = [
@@ -85,6 +88,8 @@ TEMPLATES = [
         },
     },
 ]
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
+
 
 WSGI_APPLICATION = 'roy.wsgi.application'
 
